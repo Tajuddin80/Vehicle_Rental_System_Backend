@@ -15,7 +15,7 @@ const initDB = async () => {
         WHEN duplicate_object THEN null;
       END $$;
     `);
-    
+
     await pool.query(`
       DO $$ BEGIN
         CREATE TYPE vehicle_type AS ENUM ('car', 'bike', 'van', 'SUV');
@@ -23,7 +23,7 @@ const initDB = async () => {
         WHEN duplicate_object THEN null;
       END $$;
     `);
-    
+
     await pool.query(`
       DO $$ BEGIN
         CREATE TYPE booking_status AS ENUM ('active', 'cancelled', 'returned');
@@ -31,7 +31,7 @@ const initDB = async () => {
         WHEN duplicate_object THEN null;
       END $$;
     `);
-    
+
     await pool.query(`
       DO $$ BEGIN
         CREATE TYPE status AS ENUM ('available', 'booked');
@@ -59,7 +59,7 @@ const initDB = async () => {
         vehicle_name VARCHAR(100) NOT NULL, 
         type vehicle_type NOT NULL, 
         registration_number VARCHAR(100) UNIQUE NOT NULL, 
-        daily_rent_price NUMERIC NOT NULL CHECK (daily_rent_price > 0), 
+        daily_rent_price FLOAT NOT NULL CHECK (daily_rent_price > 0), 
         availability_status status NOT NULL 
       )
     `);
@@ -71,8 +71,10 @@ const initDB = async () => {
         vehicle_id INTEGER NOT NULL, 
         rent_start_date DATE NOT NULL, 
         rent_end_date DATE NOT NULL, 
-        total_price NUMERIC NOT NULL CHECK (total_price > 0), 
+        total_price FLOAT NOT NULL CHECK (total_price > 0), 
         status booking_status NOT NULL, 
+
+        
         CONSTRAINT fk_customer FOREIGN KEY (customer_id) REFERENCES users(id) ON DELETE CASCADE, 
         CONSTRAINT fk_vehicle FOREIGN KEY (vehicle_id) REFERENCES vehicles(id) ON DELETE CASCADE, 
         CONSTRAINT valid_rent_dates CHECK (rent_end_date > rent_start_date) 

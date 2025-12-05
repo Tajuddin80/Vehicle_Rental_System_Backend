@@ -4,7 +4,7 @@ export const signUpSchema = z.object({
   name: z
     .string()
     .trim()
-    .min(2, { message: "Name must be at least 2 characters" }),
+    .min(3, { message: "Name must be at least 3 characters" }),
 
   email: z.email({ message: "Invalid email address" }),
 
@@ -31,5 +31,5 @@ export const signInSchema = z.object({
     .min(6, { message: "Password must be at least 6 characters" }),
 });
 
-export type SignUpUser = z.infer<typeof signUpSchema>;
-export type SignInUser = z.infer<typeof signInSchema>;
+export type ZodSignUpUser = z.infer<typeof signUpSchema>;
+export type ZodSignInUser = z.infer<typeof signInSchema>;

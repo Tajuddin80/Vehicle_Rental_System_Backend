@@ -41,9 +41,7 @@ const getVehicles = async (req: Request, res: Response) => {
     return res.status(200).json({
       success: true,
       message:
-        result.rows.length === 0
-          ? "No vehicles found"
-          : "Vehicles retrieved successfully",
+         "Vehicles retrieved successfully",
       data: result.rows || [],
     });
   } catch (error: any) {
@@ -149,6 +147,8 @@ const deleteVehicleById = async (req: Request, res: Response) => {
     }
 
     const result = await vehicleServices.deleteVehicleById(vehicleId as string);
+
+    
     if (result.rowCount) {
       return res.status(200).json({
         success: true,

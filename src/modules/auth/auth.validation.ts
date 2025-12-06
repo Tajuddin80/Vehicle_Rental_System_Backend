@@ -16,8 +16,9 @@ export const signUpSchema = z.object({
   phone: z
     .string()
     .trim()
-    .regex(/^[0-9]{10,15}$/, { message: "Phone number must be 10-15 digits" }),
-
+    .regex(/^\+?[0-9]{10,15}$/, {
+      message: "Phone number must be 10–15 digits and may start with +",
+    }),
   // No custom message - Zod provides a good default
   role: z.enum(["admin", "customer"]),
 });

@@ -18,6 +18,10 @@ const signUpUser = async (payload: ZodSignUpUser) => {
   return result;
 };
 
+
+
+
+
 const signInUser = async (payload: ZodSignInUser) => {
   const { email, password } = payload;
 

@@ -2,13 +2,23 @@ import { NextFunction, Request, Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import config from "../config";
 import { pool } from "../config/db";
+
 const verifyRoles = (...roles: ("admin" | "customer")[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {
-    const token = req.headers.authorization;
+    const bearerToken = req.headers.authorization;
+
+    if (!bearerToken) {
+      return res
+        .status(401)
+        .json({ success: false, message: "No 'Bearer <token>' provided" });
+    }
+
+    const token = bearerToken.split(" ")[1];
+
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: "You are not authenticated",
+        message: "Please provide 'Bearer <token>'",
         errors: "Unauthorized access",
       });
     }

@@ -9,7 +9,7 @@ const verifyRoles = (...roles: ("admin" | "customer")[]) => {
       return res.status(401).json({
         success: false,
         message: "You are not authenticated",
-        errors: "Token unavailable",
+        errors: "Unauthorized access",
       });
     }
     const decoded = jwt.verify(token, config.jwtSecret as string) as JwtPayload;
@@ -31,7 +31,7 @@ const verifyRoles = (...roles: ("admin" | "customer")[]) => {
       return res.status(403).json({
         success: false,
         message: "Unable to access",
-        errors: "You are not authorized",
+        errors: "Forbidden access",
       });
     }
     next();

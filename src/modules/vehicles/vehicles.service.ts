@@ -64,7 +64,12 @@ const updateVehicleById = async (id: string, payload: ZodUpdateVehicle) => {
   return result;
 };
 
-const deleteVehicleById = async () => {};
+const deleteVehicleById = async (vehicleId: string) => {
+  const result = await pool.query(`DELETE FROM vehicles WHERE id = $1`, [
+    vehicleId,
+  ]);
+  return result;
+};
 
 export const vehicleServices = {
   getVehicleById,

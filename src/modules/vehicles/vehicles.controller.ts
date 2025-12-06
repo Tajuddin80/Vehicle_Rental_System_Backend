@@ -97,6 +97,15 @@ const getVehicleById = async (req: Request, res: Response) => {
 const updateVehicleById = async (req: Request, res: Response) => {
   try {
     const vehicleId = req.params?.vehicleId;
+    // Check if body has any keys
+    const isBodyEmpty = !req.body || Object.keys(req.body).length === 0;
+
+    if (!vehicleId || isBodyEmpty) {
+      return res.status(400).json({
+        success: false,
+        message: "Both vehicle ID and updated body are required!",
+      });
+    }
 
     const validatedData = updateVehicleSchema.parse(req.body);
 
@@ -111,7 +120,7 @@ const updateVehicleById = async (req: Request, res: Response) => {
       data: result.rows[0],
     });
   } catch (error: any) {
-   if (error instanceof ZodError) {
+    if (error instanceof ZodError) {
       // Just return your custom messages
       const messages = error.issues.map((issue) => issue.message);
 
@@ -128,7 +137,46 @@ const updateVehicleById = async (req: Request, res: Response) => {
   }
 };
 
-const deleteVehicleById = async (req: Request, res: Response) => {};
+const deleteVehicleById = async (req: Request, res: Response) => {
+  try {
+    const vehicleId = req.params?.vehicleId;
+
+    if (!vehicleId) {
+      return res.status(400).json({
+        success: false,
+        message: "Vehicle Id not Provided",
+      });
+    }
+
+    const result = await vehicleServices.deleteVehicleById(vehicleId as string);
+    if (result.rowCount) {
+      return res.status(200).json({
+        success: true,
+        message: "Vehicle deleted successfully",
+      });
+    } else {
+      return res.status(200).json({
+        success: true,
+        message: "Given vehicle id isn't available",
+      });
+    }
+  } catch (error: any) {
+    if (error instanceof ZodError) {
+      // Just return your custom messages
+      const messages = error.issues.map((issue) => issue.message);
+
+      return res.status(400).json({
+        success: false,
+        errors: messages,
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Failed to delete vehicle",
+    });
+  }
+};
 
 export const vehicleControllers = {
   getVehicleById,

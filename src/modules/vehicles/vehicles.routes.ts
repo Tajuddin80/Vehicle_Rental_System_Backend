@@ -7,13 +7,19 @@ const router = Router();
 
 router.post("/", verifyRoles(Roles.admin), vehicleControllers.createVehicle);
 
-
 router.get("/", vehicleControllers.getVehicles);
 router.get("/:vehicleId", vehicleControllers.getVehicleById);
-router.put("/:vehicleId", verifyRoles(Roles.admin) ,vehicleControllers.updateVehicleById);
 
+router.put(
+  "/:vehicleId",
+  verifyRoles(Roles.admin),
+  vehicleControllers.updateVehicleById
+);
 
-
-router.delete("/:vehicleId", vehicleControllers.deleteVehicleById);
+router.delete(
+  "/:vehicleId",
+  verifyRoles(Roles.admin),
+  vehicleControllers.deleteVehicleById
+);
 
 export const vehicleRoutes = router;

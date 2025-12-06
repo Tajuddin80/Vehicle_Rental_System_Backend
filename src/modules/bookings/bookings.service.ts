@@ -18,8 +18,8 @@ import { ZodBookingSchema } from "./booking.validation";
 //   // Add this to bookingServices.createBooking before inserting:
 //   const checkAvailability = await pool.query(
 //     `
-//   SELECT id FROM bookings 
-//   WHERE vehicle_id = $1 
+//   SELECT id FROM bookings
+//   WHERE vehicle_id = $1
 //   AND status = 'active'
 //   AND (
 //     (rent_start_date <= $2 AND rent_end_date >= $2) OR
@@ -90,12 +90,11 @@ import { ZodBookingSchema } from "./booking.validation";
 //   };
 // };
 
-
 const createBooking = async (payload: ZodBookingSchema) => {
   const client = await pool.connect();
-  
+
   try {
-    await client.query('BEGIN');
+    await client.query("BEGIN");
 
     // 1. Get and validate vehicle
     const vehicle_info = await vehicleServices.getVehicleById(
@@ -130,7 +129,8 @@ const createBooking = async (payload: ZodBookingSchema) => {
     // 3. Calculate price
     const start = new Date(payload.rent_start_date);
     const end = new Date(payload.rent_end_date);
-    const number_of_days = (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24);
+    const number_of_days =
+      (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24);
     const total_price = number_of_days * vehicle_info.rows[0].daily_rent_price;
 
     // 4. Insert booking
@@ -163,7 +163,7 @@ const createBooking = async (payload: ZodBookingSchema) => {
       [payload.vehicle_id]
     );
 
-    await client.query('COMMIT');
+    await client.query("COMMIT");
 
     const booking = insertBookingResult.rows[0];
 
@@ -182,25 +182,38 @@ const createBooking = async (payload: ZodBookingSchema) => {
       },
     };
   } catch (error) {
-    await client.query('ROLLBACK');
+    await client.query("ROLLBACK");
     throw error;
   } finally {
     client.release();
   }
 };
 
+const getAllBookings = async () => {
+  const result = await pool.query(`
+    SELECT 
+      b.id,
+      b.customer_id,
+      b.vehicle_id,
+      b.rent_start_date,
+      b.rent_end_date,
+      b.total_price,
+      b.status,
 
+      -- user fields from users table
+      u.name AS customer_name,
+      u.email AS customer_email,
 
+      -- vehicle fields
+      v.vehicle_name,
+      v.registration_number
 
-
-
-const getAllBookings = async (userId: string) => {
-
-// const userRole = 
-
-
-
-
+    FROM bookings b
+    JOIN users u ON b.customer_id = u.id
+    JOIN vehicles v ON b.vehicle_id = v.id
+    ORDER BY b.id ASC;
+  `);
+return result
 };
 const updateBookingbyId = async () => {};
 

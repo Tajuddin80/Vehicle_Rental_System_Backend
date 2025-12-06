@@ -9,7 +9,11 @@ router.post(
   verifyRoles(Roles.admin, Roles.customer),
   bookingControllers.createBooking
 );
-// router.get('/', bookingControllers.getAllBookings)
+router.get(
+  "/",
+  verifyRoles(Roles.admin, Roles.customer),
+  bookingControllers.getAllBookings
+);
 // router.put('/:bookingId', bookingControllers.updateBookingbyId)
 
 export const bookingRoutes = router;

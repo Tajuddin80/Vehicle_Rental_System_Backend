@@ -30,8 +30,8 @@ const verifyRoles = (...roles: ("admin" | "customer")[]) => {
     if (user.rows.length === 0) {
       return res.status(404).json({
         success: false,
-        message: "user not found",
-        errors: "user unavailable",
+        message: "not valid user",
+        errors: "token user unavailable",
       });
     }
 

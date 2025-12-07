@@ -36,25 +36,18 @@ const deleteUserById = async (req: Request, res: Response) => {
     if (!userId) {
       return res.status(400).json({
         success: false,
-        message: "user Id not Provided",
+        message: "User ID not provided",
       });
     }
+
     const result = await userServices.deleteUserById(userId as string);
 
-    if (result.rowCount) {
-      return res.status(200).json({
-        success: true,
-        message: "User deleted successfully",
-      });
-    } else {
-      return res.status(200).json({
-        success: true,
-        message: "Given user id isn't available or already been deleted",
-      });
-    }
+    return res.status(200).json({
+      success: true,
+      message: "User deleted successfully",
+    });
   } catch (error: any) {
     if (error instanceof ZodError) {
-      // Just return your custom messages
       const messages = error.issues.map((issue) => issue.message);
 
       return res.status(400).json({
@@ -62,13 +55,29 @@ const deleteUserById = async (req: Request, res: Response) => {
         errors: messages,
       });
     }
+
+    // Handle specific business logic errors
+    if (error.message.includes("Cannot delete user")) {
+      return res.status(400).json({
+        success: false,
+        message: error.message,
+      });
+    }
+
+    if (error.message === "User not found") {
+      return res.status(404).json({
+        success: false,
+        message: "User not found or already deleted",
+      });
+    }
+
+    // Generic error handler
     return res.status(500).json({
       success: false,
       message: error.message || "Failed to delete user",
     });
   }
 };
-
 const updateUserById = async (req: Request, res: Response) => {
   try {
     const userId = req.params?.userId;

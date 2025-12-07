@@ -65,10 +65,25 @@ const updateVehicleById = async (id: string, payload: ZodUpdateVehicle) => {
 };
 
 const deleteVehicleById = async (vehicleId: string) => {
+  const vehicleBookings = await pool.query(
+    `SELECT COUNT(*) as booking_count FROM bookings WHERE vehicle_id = $1`,
+    [vehicleId]
+  );
+
+  const bookingCount = parseInt(vehicleBookings.rows[0].booking_count);
+
+  if (bookingCount > 0) {
+    throw new Error(
+      `Cannot delete vehicle. vhicles has ${bookingCount} booking(s) associated.`
+    );
+  }
   const result = await pool.query(`DELETE FROM vehicles WHERE id = $1`, [
     vehicleId,
   ]);
-  return result;
+  if (result.rowCount === 0) {
+    throw new Error("vehicle not found");
+  }
+  return result.rows[0];
 };
 
 export const vehicleServices = {

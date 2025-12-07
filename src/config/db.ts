@@ -81,6 +81,21 @@ const initDB = async () => {
       )
     `);
 
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_bookings_status_end_date 
+      ON bookings(status, rent_end_date);
+    `);
+
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_bookings_vehicle_status 
+      ON bookings(vehicle_id, status);
+    `);
+
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_vehicles_status 
+      ON vehicles(availability_status);
+    `);
+
     console.log("Database initialized successfully!");
   } catch (error) {
     console.error("Database initialization error:", error);

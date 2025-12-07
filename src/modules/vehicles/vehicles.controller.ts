@@ -40,8 +40,7 @@ const getVehicles = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       success: true,
-      message:
-         "Vehicles retrieved successfully",
+      message: "Vehicles retrieved successfully",
       data: result.rows || [],
     });
   } catch (error: any) {
@@ -142,32 +141,39 @@ const deleteVehicleById = async (req: Request, res: Response) => {
     if (!vehicleId) {
       return res.status(400).json({
         success: false,
-        message: "Vehicle Id not Provided",
+        message: "Vehicle ID not provided",
       });
     }
 
     const result = await vehicleServices.deleteVehicleById(vehicleId as string);
 
-    
-    if (result.rowCount) {
-      return res.status(200).json({
-        success: true,
-        message: "Vehicle deleted successfully",
-      });
-    } else {
-      return res.status(200).json({
-        success: true,
-        message: "Given vehicle id isn't available",
-      });
-    }
+    return res.status(200).json({
+      success: true,
+      message: "Vehicle deleted successfully",
+      data: result, // ✅ Add this
+    });
   } catch (error: any) {
     if (error instanceof ZodError) {
-      // Just return your custom messages
       const messages = error.issues.map((issue) => issue.message);
 
       return res.status(400).json({
         success: false,
         errors: messages,
+      });
+    }
+
+    // Handle specific business logic errors
+    if (error.message.includes("Cannot delete vehicle")) {
+      return res.status(400).json({
+        success: false,
+        message: error.message,
+      });
+    }
+
+    if (error.message === "Vehicle not found") { // ✅ Capitalized for consistency
+      return res.status(404).json({
+        success: false,
+        message: "Vehicle not found or already deleted",
       });
     }
 

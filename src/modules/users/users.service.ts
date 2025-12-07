@@ -9,18 +9,42 @@ const getAllUsers = async () => {
 };
 
 const deleteUserById = async (userId: string) => {
-  const result = await pool.query(`DELETE FROM users WHERE id= $1`, [userId]);
-  return result;
+  // Check if user has any bookings
+  const userBookings = await pool.query(
+    `SELECT COUNT(*) as booking_count FROM bookings WHERE customer_id = $1`,
+    [userId]
+  );
+
+  const bookingCount = parseInt(userBookings.rows[0].booking_count);
+
+  // If user has bookings, throw an error
+  if (bookingCount > 0) {
+    throw new Error(
+      `Cannot delete user. User has ${bookingCount} booking(s) associated with their account.`
+    );
+  }
+
+  // If no bookings, proceed with deletion
+  const result = await pool.query(
+    `DELETE FROM users WHERE id = $1 RETURNING *`,
+    [userId]
+  );
+
+  if (result.rowCount === 0) {
+    throw new Error("User not found");
+  }
+
+  return result.rows[0];
 };
 
 const updateUserById = async (
-  targetId: string, 
-  payload: Record<string, any>, 
+  targetId: string,
+  payload: Record<string, any>,
   requesterId: string | number
 ) => {
   // Check if requester has permission
   const requesterQuery = await pool.query(
-    `SELECT role FROM users WHERE id = $1`, 
+    `SELECT role FROM users WHERE id = $1`,
     [requesterId]
   );
 
@@ -32,9 +56,6 @@ const updateUserById = async (
   const isAdmin = requesterRole === "admin";
   const isOwnProfile = targetId === requesterId.toString();
 
-  // Only allow update if:
-  // 1. User is admin, OR
-  // 2. User is updating their own profile
   if (!isAdmin && !isOwnProfile) {
     throw new Error("You can only update your own profile");
   }

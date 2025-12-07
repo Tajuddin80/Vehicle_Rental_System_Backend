@@ -28,4 +28,9 @@ export const bookingSchema = z
     path: ["rent_end_date"],
   });
 
+export const updateBookingSchema = z.object({
+  status: z.enum(["cancelled", "returned"]),
+});
+
 export type ZodBookingSchema = z.infer<typeof bookingSchema>;
+export type ZodUpdatingSchema = z.infer<typeof updateBookingSchema>;

@@ -14,6 +14,10 @@ router.get(
   verifyRoles(Roles.admin, Roles.customer),
   bookingControllers.getAllBookings
 );
-// router.put('/:bookingId', bookingControllers.updateBookingbyId)
+router.put(
+  "/:bookingId",
+  verifyRoles(Roles.admin, Roles.customer),
+  bookingControllers.updateBookingbyId
+);
 
 export const bookingRoutes = router;

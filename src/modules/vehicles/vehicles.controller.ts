@@ -37,12 +37,19 @@ const createVehicle = async (req: Request, res: Response) => {
 const getVehicles = async (req: Request, res: Response) => {
   try {
     const result = await vehicleServices.getVehicles();
-
-    return res.status(200).json({
-      success: true,
-      message: "Vehicles retrieved successfully",
-      data: result.rows || [],
-    });
+    if (result.rowCount! > 0) {
+      return res.status(200).json({
+        success: true,
+        message: "Vehicles retrieved successfully",
+        data: result.rows || [],
+      });
+    } else {
+      return res.status(200).json({
+        success: true,
+        message: "No vehicles found",
+        data: result.rows || [],
+      });
+    }
   } catch (error: any) {
     if (error instanceof ZodError) {
       // Just return your custom messages
@@ -170,7 +177,8 @@ const deleteVehicleById = async (req: Request, res: Response) => {
       });
     }
 
-    if (error.message === "Vehicle not found") { // ✅ Capitalized for consistency
+    if (error.message === "Vehicle not found") {
+      // ✅ Capitalized for consistency
       return res.status(404).json({
         success: false,
         message: "Vehicle not found or already deleted",

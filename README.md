@@ -88,43 +88,46 @@ The Vehicle Rental System is a comprehensive backend solution that enables:
 ## 📁 Project Structure
 
 ```
-vehicle_rental_system_backend/
-├── src/
-│   ├── config/
-│   │   ├── index.ts              # Environment configuration
-│   │   └── db.ts                 # Database connection & initialization
-│   ├── middleware/
-│   │   ├── auth.middleware.ts    # JWT authentication
-│   │   └── role.middleware.ts    # Role-based authorization
-│   ├── modules/
-│   │   ├── auth/
-│   │   │   ├── auth.routes.ts
-│   │   │   ├── auth.controller.ts
-│   │   │   ├── auth.service.ts
-│   │   │   └── auth.validation.ts
-│   │   ├── users/
-│   │   │   ├── users.routes.ts
-│   │   │   ├── users.controller.ts
-│   │   │   ├── users.service.ts
-│   │   │   └── users.validation.ts
-│   │   ├── vehicles/
-│   │   │   ├── vehicles.routes.ts
-│   │   │   ├── vehicles.controller.ts
-│   │   │   ├── vehicles.service.ts
-│   │   │   └── vehicles.validation.ts
-│   │   ├── bookings/
-│   │   │   ├── bookings.routes.ts
-│   │   │   ├── bookings.controller.ts
-│   │   │   ├── bookings.service.ts
-│   │   │   └── bookings.validation.ts
-│   │   └── jobs/
-│   │       └── autoReturnBookings.ts  # Cron job for auto-returns
-│   ├── app.ts                    # Express app setup
-│   └── server.ts                 # Server entry point
-├── .env                          # Environment variables
-├── package.json
-├── tsconfig.json
-└── README.md
+├── 📁 src
+│   ├── 📁 config
+│   │   ├── 📄 db.ts
+│   │   └── 📄 index.ts
+│   ├── 📁 middleware
+│   │   └── 📄 verifyRoles.ts
+│   ├── 📁 modules
+│   │   ├── 📁 auth
+│   │   │   ├── 📄 auth.constant.ts
+│   │   │   ├── 📄 auth.controller.ts
+│   │   │   ├── 📄 auth.routes.ts
+│   │   │   ├── 📄 auth.service.ts
+│   │   │   └── 📄 auth.validation.ts
+│   │   ├── 📁 bookings
+│   │   │   ├── 📄 booking.validation.ts
+│   │   │   ├── 📄 bookings.controller.ts
+│   │   │   ├── 📄 bookings.routes.ts
+│   │   │   └── 📄 bookings.service.ts
+│   │   ├── 📁 jobs
+│   │   │   └── 📄 autoReturnBookings.ts
+│   │   ├── 📁 users
+│   │   │   ├── 📄 users.controller.ts
+│   │   │   ├── 📄 users.routes.ts
+│   │   │   ├── 📄 users.service.ts
+│   │   │   └── 📄 users.validation.ts
+│   │   └── 📁 vehicles
+│   │       ├── 📄 vehicles.controller.ts
+│   │       ├── 📄 vehicles.routes.ts
+│   │       ├── 📄 vehicles.service.ts
+│   │       └── 📄 vehicles.validation.ts
+│   ├── 📁 types
+│   │   └── 📁 express
+│   │       └── 📄 index.d.ts
+│   ├── 📄 app.ts
+│   └── 📄 server.ts
+├── ⚙️ .gitignore
+├── 📝 README.md
+├── ⚙️ package-lock.json
+├── ⚙️ package.json
+└── ⚙️ tsconfig.json
 ```
 
 ---
@@ -163,14 +166,10 @@ PORT=5000
 NODE_ENV=development
 
 # Database Configuration
-DATABASE_URL=postgresql://username:password@localhost:5432/vehicle_rental_db
+PG_CONNECTION_STR=postgresql://username:password@localhost:5432/vehicle_rental_db
 
 # JWT Configuration
 JWT_SECRET=your_super_secret_jwt_key_here_change_in_production
-JWT_EXPIRES_IN=7d
-
-# Cron Job Configuration (optional)
-AUTO_RETURN_SCHEDULE=1 0 * * *  # Daily at 12:01 AM
 ```
 
 ---

@@ -30,8 +30,8 @@ const verifyRoles = (...roles: ("admin" | "customer")[]) => {
     if (user.rows.length === 0) {
       return res.status(404).json({
         success: false,
-        message: "not valid user",
-        errors: "token user unavailable",
+        message: "not authorizd user",
+        errors: "Don't have access to this route",
       });
     }
 

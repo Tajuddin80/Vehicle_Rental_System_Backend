@@ -2,6 +2,15 @@
 
 A robust and secure backend API for managing vehicle rentals, built with Node.js, TypeScript, Express, and PostgreSQL.
 
+
+---
+
+## 🎯 Live URL
+Root: https://vehicle-rental-system-backend-six.vercel.app/
+Version: https://vehicle-rental-system-backend-six.vercel.app/api/v1/
+
+
+
 ---
 
 ## 📋 Table of Contents
